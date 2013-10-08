@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>APPLICATION_VERSION</name>
+          <description>Application version to deploy</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>RELEASE_SUFFIX</name>
+          <description>A release suffix identifier to distinguish release sources in tomcat manager </description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>TARGET_ENV</name>
+          <description>target environment to deploy</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>localhost:8090</string>
+              <string>foo:8080</string>
+              <string>bar:8080</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>cp $JENKINS_HOME/releases/petclinic-$APPLICATION_VERSION.war .</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>curl -T &quot;petclinic-$APPLICATION_VERSION.war&quot; &quot;http://manager:manager@$TARGET_ENV/manager/text/deploy?path=/petclinic&amp;update=true&amp;tag=$APPLICATION_VERSION-$RELEASE_SUFFIX&quot;</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

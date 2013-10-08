@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>SOURCE_BUILD</name>
+          <description>Upstream build to release</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>Petclinic-CI-Job</string>
+              <string>Petclinic-Nightly-Release-Job</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BUILD_NUMBER</name>
+          <description>Build number of source build</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>RELEASE_SUFFIX</name>
+          <description>Choose a suffix to create version in tomcat manager</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>APPLICATION_VERSION</name>
+          <description>Application version number to release for deploy</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.28">
+      <project>$SOURCE_BUILD</project>
+      <filter>*.war</filter>
+      <target>$JENKINS_HOME/releases/</target>
+      <selector class="hudson.plugins.copyartifact.SpecificBuildSelector">
+        <buildNumber>$BUILD_NUMBER</buildNumber>
+      </selector>
+    </hudson.plugins.copyartifact.CopyArtifact>
+  </builders>
+  <publishers>
+    <hudson.plugins.parameterizedtrigger.BuildTrigger plugin="parameterized-trigger@2.21">
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+              <properties>APPLICATION_VERSION=$APPLICATION_VERSION
+RELEASE_SUFFIX=$RELEASE_SUFFIX
+TARGET_ENV=localhost:8090</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <projects>Petclinic-Deploy-Job</projects>
+          <condition>SUCCESS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+        </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.BuildTrigger>
+  </publishers>
+  <buildWrappers/>
+</project>

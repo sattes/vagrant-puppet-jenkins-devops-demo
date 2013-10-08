@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>put a lsave offline and (optional) shut down the associated VM.</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>NODE_NAME</name>
+          <description>Jenkins slave to turn off</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>petclinic-vm</string>
+              <string>rpms-buildbox</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>HALT_VM</name>
+          <description>Halt VM in which this slave is running?</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>NODE_HOME</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>none</string>
+              <string>devops-assignment</string>
+              <string>rpms-buildbox</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <customWorkspace>/Users/anadi/tools/xebia</customWorkspace>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>java -jar rpms-buildbox/jenkins/jenkins-cli.jar -s http://localhost:8080/jenkins/ disconnect-node $NODE_NAME
+java -jar rpms-buildbox/jenkins/jenkins-cli.jar -s http://localhost:8080/jenkins/ offline-node $NODE_NAME</command>
+    </hudson.tasks.Shell>
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.1">
+      <condition class="org.jenkins_ci.plugins.run_condition.core.BooleanCondition" plugin="run-condition@1.0">
+        <token>${ENV,var=&quot;$HALT_VM&quot;}</token>
+      </condition>
+      <buildStep class="hudson.tasks.Shell">
+        <command>cd /Users/anadi/tools/xebia/$NODE_HOME
+vagrant halt</command>
+      </buildStep>
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
+    </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

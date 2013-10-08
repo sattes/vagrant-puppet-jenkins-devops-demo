@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <customWorkspace>/Users/anadi/tools/xebia/devops-assignment</customWorkspace>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>vagrant up</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>echo &quot;Optionally create a slave to this VM using :java -jar jenkins/jenkins-cli.jar -s http://localhost:8080/jenkins/ create-node petclinic-vm &lt; jenkins/Petclinic-Node.xml&quot;</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>
