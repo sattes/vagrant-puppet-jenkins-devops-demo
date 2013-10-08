@@ -1,0 +1,5 @@
+#!/bin/bash
+# Set tomcat container and Jenkins environment variables
+JAVA_HOME=~/tools/jdk
+JRE_HOME=$JAVA_HOME/jre
+CATALINA_OPTS=

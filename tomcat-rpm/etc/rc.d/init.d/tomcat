@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# chkconfig: - 80 45
+# description: Starts and stops tomcat
+
+PATH=$PATH
+export PATH
+
+start() {
+        su - tomcat -c "/apps/tomcat/default/bin/startup.sh"
+        return $?
+}
+
+stop() {
+        su - tomcat -c "/apps/tomcat/default/bin/shutdown.sh"
+        return $?
+}
+
+configtest() {
+        su - tomcat -c "/apps/tomcat/default/bin/catalina.sh configtest"
+        return $?
+}
+
+status() {
+	CATALINA_PID=/apps/tomcat/default/bin/catalina.pid
+	if [-f $CATALINA_PID]; then
+	    kill -0 `cat $CATALINA_PID` > /dev/null 2>&1
+        return $?
+    else
+        return 1
+    fi        
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status
+        ;;
+  restart)
+        stop
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|configtest|restart}"
+        exit 1
+esac
+
+exit $?

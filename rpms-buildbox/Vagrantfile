@@ -1,0 +1,32 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.define "rpms-buildbox" do |rpms|
+    rpms.vm.box = "xebia-devops-centosv64-x64"
+    rpms.vm.hostname = "rpms-buildbox"
+  
+    config.ssh.username = "vagrant"
+    config.ssh.private_key_path = "../ssh/xebia.id.rsa"
+    
+    #setting custom port forward for ssh to avoid collision if both this and xebia-devops vms are running
+    rpms.vm.network:forwarded_port,guest: 22,host: 2223,id: "ssh",auto_correct: true
+ 
+    rpms.vm.synced_folder "/Users/anadi/tools/xebia/tomcat-rpm", "/tomcat-rpm"
+    rpms.vm.synced_folder "/Users/anadi/tools/xebia/shared-data/yum", "/yum"
+
+    rpms.vm.provider :virtualbox do |vbox|
+      vbox.name = "rpms-buildbox"
+    end
+	
+	rpms.vm.provision :puppet do |puppet|
+	  puppet.options = "--verbose --debug"
+	  puppet.manifests_path = "puppet/manifests"
+	  puppet.manifest_file = "site.pp"
+	end    
+    
+  end 
+end

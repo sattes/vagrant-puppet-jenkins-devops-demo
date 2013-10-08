@@ -1,0 +1,12 @@
+tomcat-rpm/build
+tomcat-rpm/dist
+*.log
+*.out
+.DS_Store
+jenkins
+.vagrant
+*.rpm
+repodata
+*.box
+vbox
+shared-data/tomcat
